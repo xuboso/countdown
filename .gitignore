@@ -1,7 +1,9 @@
 # Files to ignore
 node_modules
+release
 build
 tests
 demos
+docs
+workspace
 CHANGELOG.md
-MINDMAP.md
