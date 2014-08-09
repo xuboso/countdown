@@ -1,4 +1,4 @@
-(function(factory) {
+(function (factory) {
     if (typeof define === "function" && define.amd) {
         // AMD. Register as anonymous module.
         define(["jquery"], factory);
@@ -6,22 +6,20 @@
         // Browser globals.
         factory(jQuery);
     }
-}(function($) {
-   
+})(function ($) {
+
     "use strict";
 
-    var Countdown = function(element, options) {
-            options = $.isPlainObject(options) ? options : {};
+    var Countdown = function (element, options) {
             this.$element = $(element);
-            this.defaults = $.extend({}, Countdown.defaults, this.$element.data(), options);
+            this.defaults = $.extend({}, Countdown.defaults, this.$element.data(), $.isPlainObject(options) ? options : {});
             this.init();
-            // console.log(this);
         };
-            
+
     Countdown.prototype = {
         constructor: Countdown,
 
-        init: function() {
+        init: function () {
             var content = this.$element.html(),
                 date = new Date(this.defaults.date || content);
 
@@ -29,14 +27,14 @@
                 this.content = content;
                 this.date = date;
                 this.find();
-                
+
                 if (this.defaults.autoStart) {
                     this.start();
                 }
             }
         },
 
-        find: function() {
+        find: function () {
             var $element = this.$element;
 
             this.$days = $element.find("[data-days]");
@@ -49,7 +47,7 @@
             }
         },
 
-        reset: function() {
+        reset: function () {
             if (this.found) {
                 this.output("days");
                 this.output("hours");
@@ -60,7 +58,7 @@
             }
         },
 
-        ready: function() {
+        ready: function () {
             var date = this.date,
                 decisecond = 100,
                 second = 1000,
@@ -69,13 +67,13 @@
                 day = 86400000,
                 remainder = {},
                 diff;
-            
+
             if (!date) {
                 return false;
             }
 
             diff = date.getTime() - (new Date()).getTime();
-            
+
             if (diff <= 0) {
                 this.end();
                 return false;
@@ -95,8 +93,8 @@
 
             return true;
         },
-        
-        start: function() {
+
+        start: function () {
             if (!this.active && this.ready()) {
                 this.active = true;
                 this.reset();
@@ -105,15 +103,15 @@
                     setInterval($.proxy(this.update, this), 1000);
             }
         },
-        
-        stop: function() {
+
+        stop: function () {
             if (this.active) {
                 this.active = false;
                 clearInterval(this.autoUpdate);
             }
         },
 
-        end: function() {
+        end: function () {
             if (!this.date) {
                 return;
             }
@@ -129,27 +127,23 @@
             this.defaults.end();
         },
 
-        destory: function() {
+        destroy: function () {
             if (!this.date) {
                 return;
             }
 
             this.stop();
-            
+
             this.$days = null;
             this.$hours = null;
             this.$minutes = null;
             this.$seconds = null;
-            
-            this.date = null;
-            this.defaults = null;
 
             this.$element.empty().html(this.content);
-            this.content = null;
-            this.$element = null;
+            this.$element.removeData("countdown");
         },
-        
-        fastUpdate: function() {
+
+        fastUpdate: function () {
             if (--this.deciseconds >= 0) {
                 this.output("deciseconds");
             } else {
@@ -157,13 +151,13 @@
                 this.update();
             }
         },
-        
-        update: function() {
+
+        update: function () {
             if (--this.seconds >= 0) {
                 this.output("seconds");
             } else {
                 this.seconds = 59;
-                
+
                 if (--this.minutes >= 0) {
                     this.output("minutes");
                 } else {
@@ -173,7 +167,7 @@
                         this.output("hours");
                     } else {
                         this.hours = 23;
-                        
+
                         if (--this.days >= 0) {
                             this.output("days");
                         } else {
@@ -184,7 +178,7 @@
             }
         },
 
-        output: function(type) {
+        output: function (type) {
             if (!this.found) {
                 this.$element.empty().html(this.template());
                 return;
@@ -215,7 +209,7 @@
             }
         },
 
-        template: function() {
+        template: function () {
             return this.defaults.text
                     .replace("%s", this.days)
                     .replace("%s", this.hours)
@@ -223,49 +217,46 @@
                     .replace("%s", this.getSecondsText());
         },
 
-        getSecondsText: function() {
+        getSecondsText: function () {
             return this.active && this.defaults.fast ? (this.seconds + "." + this.deciseconds) : this.seconds;
         }
     };
 
-
     // Default settings
     Countdown.defaults = {
         autoStart: true,
-        date: undefined,
+        date: null,
         fast: false,
-        end: function() {},
+        end: $.noop,
         text: "%s days, %s hours, %s minutes, %s seconds"
     };
 
     // Set default settings
-    Countdown.setDefaults = function(options) {
+    Countdown.setDefaults = function (options) {
         $.extend(Countdown.defaults, options);
     };
 
     // Register as jQuery plugin
-    $.fn.countdown = function(options) {
-        return this.each(function() {
+    $.fn.countdown = function (options) {
+        return this.each(function () {
             var $this = $(this),
                 data = $this.data("countdown");
-            
+
             if (!data) {
-                data = new Countdown(this, options);
-                $this.data("countdown", data);
+                $this.data("countdown", (data = new Countdown(this, options)));
             }
-            
+
             if (typeof options === "string" && $.isFunction(data[options])) {
                 data[options]();
             }
         });
     };
 
-    $.fn.countdown.Constructor = Countdown;
+    $.fn.countdown.constructor = Countdown;
     $.fn.countdown.setDefaults = Countdown.setDefaults;
 
-    // Initialize on DOM ready
-    $(function() {
+    $(function () {
         $("[countdown]").countdown();
     });
-    
-}));
+
+});

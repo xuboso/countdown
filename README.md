@@ -2,6 +2,8 @@
 
 A jQuery countdown plugin.
 
+- [Documentation](http://fengyuanchen.github.io/countdown)
+
 
 # Getting started
 
@@ -58,14 +60,9 @@ $(".countdown").countdown({
 ```
 
 
-## Configure
-
-### Setup
+## Options
 
 Setup with `$("#target").countdown(options)`, or global setup with `$.fn.countdown.setDefaults(options)`.
-
-
-### Options
 
 #### autoStart
 
@@ -78,7 +75,7 @@ Auto start the countdown when initialized.
 #### date
 
 * type: object / number / string
-* default: undefined
+* default: null
 
 The target date, allow date object, time number (milliseconds) and valid date string.
 
@@ -107,14 +104,32 @@ The function will be run when the countdown end.
 Just a text template, you can customize it, e.g., "%s D / %s H / %s M / %s S".
 
 
+
 ## Methods
 
-* start - Start the countdown
-* stop - Stop the countdown
-* end - End the countdown
-* destory - Destory the countdown
+#### start
 
-Use with `$("#target").countdown("stop")`.
+- Start the countdown.
+- Usage: `$().countdown("start")`.
+
+
+#### stop
+
+- Stop the countdown
+- Usage: `$().countdown("stop")`.
+
+
+#### end
+
+- End the countdown
+- Usage: `$().countdown("end")`.
+
+
+#### destroy
+
+-Destroy the countdown
+- Usage: `$().countdown("destroy")`.
+
 
 
 ## Customize
@@ -131,3 +146,20 @@ For example:
     <span data-seconds>0</span> seconds
 </div>
 ```
+
+
+## Browser Support
+
+- IE 6+
+- Chrome 33+
+- Firefox 27+
+- Safari 5.1+
+- Opera 19+
+
+As a jQuery plugin, you can reference to the [jQuery Browser Support](http://jquery.com/browser-support/).
+
+
+
+## [License](https://github.com/fengyuanchen/countdown/blob/master/LICENSE.md)
+
+Released under the [MIT](http://opensource.org/licenses/mit-license.html) license.
